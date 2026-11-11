@@ -132,6 +132,53 @@ class HeavyBehatTestPathTest : BasePlatformTestCase() {
         assertTrue("the project stayed in dumb mode", !com.intellij.openapi.project.DumbService.isDumb(project))
     }
 
+    /**
+     * The user opens a service directory (`api/hotels`) as the project root. Coverage keeps
+     * git-root-relative paths, so the plugin must strip the project's own prefix before asking the
+     * VFS (`api/hotels/features/...` -> `features/...`) and must pass the feature to Behat relative
+     * to the Behat config directory (`api/hotels`, where behat.yml lives).
+     */
+    fun testSubprojectStripsItsOwnPrefixForNavigationAndRun() {
+        // The light project lives in `<root>/src`, so the git root is its parent and `src` plays the
+        // role of `api/hotels`: coverage paths carry that prefix, the project does not.
+        val projectDir = project.guessProjectDir() ?: error("no project dir")
+        val base = File(project.basePath!!)
+        val gitRoot = base.parentFile!!
+        myFixture.addFileToProject("features/E2E/Sample/feature.feature", featureText)
+        CoverageDataService.getInstance(project).setCoverageContext("deadbeef", gitRoot)
+        awaitSmartMode()
+
+        val line = scenarioLine("Сценарий: Второй")
+        // The project directory plays `api/hotels`: coverage names carry it, the project does not.
+        val serviceDir = base.name
+        val rawFeature = "$serviceDir/features/E2E/Sample/feature.feature"
+        val gitRelativeTest = "$rawFeature:$line"
+
+        val resolved = java.util.concurrent.CompletableFuture<String?>()
+        ApplicationManager.getApplication().executeOnPooledThread {
+            resolved.complete(CoverageTestNavigator.resolveScenarioName(project, rawFeature, line.toString()))
+        }
+        assertNotNull("the scenario must be found through the project prefix",
+            resolved.get(60, java.util.concurrent.TimeUnit.SECONDS))
+
+        ApplicationManager.getApplication().invokeAndWait {
+            CoverageTestNavigator.navigateToTest(project, gitRelativeTest)
+        }
+        val editor = FileEditorManager.getInstance(project).selectedTextEditor
+        assertNotNull("the feature must open although the coverage path has the project prefix", editor)
+        assertEquals("features/E2E/Sample/feature.feature",
+            editor!!.virtualFile.path.removePrefix(projectDir.path).removePrefix("/"))
+        assertEquals(line - 1, editor.caretModel.logicalPosition.line)
+
+        // Behat is started from the directory of its config file; the argument loses that prefix.
+        val feature = File(realRoot, "api/hotels/features/E2E/Sample/feature.feature")
+            .apply { parentFile.mkdirs(); writeText(featureText) }
+        val relative = relativize(mapOf(feature.absolutePath to listOf(line)),
+            File(realRoot, "api/hotels").absolutePath)
+        assertEquals(listOf("features/E2E/Sample/feature.feature:$line"),
+            relative.entries.map { (path, lines) -> lines.joinToString(" ") { "$path:$it" } })
+    }
+
     // --- reflection on the private helpers (they depend on the PHP plugin, so they cannot be
     // --- extracted to a pure test helper without changing production code) -------------------
 
