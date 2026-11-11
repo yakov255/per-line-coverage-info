@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2.8.0] - 2026-11-11
+
 - The IDE no longer freezes for seconds when you show the coverage gutter or delete an artifact: git, the cache and the coverage daemon are used in the background
 - The Artifacts tab refreshes without UI glitches when a load finishes in the background
 - The first-run GitLab token dialog appears once per IDE start, even when several projects open together
