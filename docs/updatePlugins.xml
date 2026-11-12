@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugins>
+    <plugin id="com.github.yakov255.perlinecoverageinfo" url="https://github.com/yakov255/per-line-coverage-info/releases/download/2.8.1/per-line-coverage-info-2.8.1.zip" version="2.8.1">
+        <name>per-line-coverage-info</name>
+        <vendor>yakov255</vendor>
+        <idea-version since-build="252"/>
+        <change-notes><![CDATA[<ul><li>Use <code>raketa.dev</code> as the default GitLab domain again: it is the address every user can reach, while the internal <code>gitlab.raketa.in</code> resolves to an office-only address</li></ul>]]></change-notes>
+    </plugin>
     <plugin id="com.github.yakov255.perlinecoverageinfo" url="https://github.com/yakov255/per-line-coverage-info/releases/download/2.8.0/per-line-coverage-info-2.8.0.zip" version="2.8.0">
         <name>per-line-coverage-info</name>
         <vendor>yakov255</vendor>
