@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- Use `raketa.dev` as the default GitLab domain again: it is the address every user can reach, while the internal `gitlab.raketa.in` resolves to an office-only address
+
 ## [2.8.0] - 2026-11-11
 
 - The IDE no longer freezes for seconds when you show the coverage gutter or delete an artifact: git, the cache and the coverage daemon are used in the background

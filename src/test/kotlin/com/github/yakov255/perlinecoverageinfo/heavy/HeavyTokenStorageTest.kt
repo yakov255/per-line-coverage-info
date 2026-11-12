@@ -40,7 +40,7 @@ class HeavyTokenStorageTest : BasePlatformTestCase() {
 
         assertEquals("", settings.getState().bearerToken)
         val allFields = savedOptions(settings.getState())
-        assertEquals("the collector must see the other fields", "gitlab.raketa.in", allFields["gitlabDomain"])
+        assertEquals("the collector must see the other fields", "raketa.dev", allFields["gitlabDomain"])
         assertFalse(
             "the token must not be serialized: $allFields",
             allFields.values.any { it?.contains("heavy-secret-token") == true },

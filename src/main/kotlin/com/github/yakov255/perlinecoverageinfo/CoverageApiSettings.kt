@@ -14,7 +14,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 class CoverageApiSettings : PersistentStateComponent<CoverageApiSettings.State> {
 
     data class State(
-        var gitlabDomain: String = "gitlab.raketa.in",
+        var gitlabDomain: String = "raketa.dev",
         /**
          * Legacy field of the plain-text era. It is only read, to migrate a token written by an
          * older version; [getState] always returns it empty, so no token is ever saved again.

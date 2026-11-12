@@ -264,7 +264,8 @@ GITLAB_TOKEN_FROM_IDE=1 ./scripts/ui-test.sh   # real-IDE UI scenario (see "UI t
   `src/test/resources/covd/`. `heavy.HeavyCovdLoadTest` drives `CoverageLoadService` end to end
   through the same pieces inside the IDE (the heavyTest classpath has no test resources, so its
   COVT fixtures are embedded as base64). `CoverageApiSettings.gitlabDomain` accepts an explicit
-  `http://host:port` for such tests.
+  `http://host:port` for such tests. The default domain is `raketa.dev` (GitLab's `external_url`, reachable
+  from any network); the internal `gitlab.raketa.in` answers only from the office network.
 - `heavy.HeavyCovdFailureTest` covers the failure contract inside the IDE: `AUTH_INVALID` blocks
   without retries and a new token loads through the shared Apply path; `NO_COMPONENT_JOBS` stops the
   poller until HEAD moves; a retryable error runs the 1+3 ladder (short delays from

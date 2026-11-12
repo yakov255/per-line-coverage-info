@@ -44,7 +44,7 @@ class CoverageApiSettingsSecurityTest {
         assertEquals("legacy-plain-text-token", settings.bearerToken)
         assertEquals("", settings.getState().bearerToken)
         val saved = savedOptions(settings)
-        assertEquals("the collector must see the other fields", "gitlab.raketa.in", saved["gitlabDomain"])
+        assertEquals("the collector must see the other fields", "raketa.dev", saved["gitlabDomain"])
         assertFalse(
             "the serialized state must not contain the token",
             saved.values.any { it?.contains("legacy-plain-text-token") == true },
@@ -82,10 +82,12 @@ class CoverageApiSettingsSecurityTest {
     fun `the defaults name a host and keep the raketa project`() {
         val state = CoverageApiSettings.State()
 
-        assertEquals("gitlab.raketa.in", state.gitlabDomain)
+        // raketa.dev is GitLab's external_url: the address a user can reach from anywhere, unlike the
+        // internal gitlab.raketa.in. The build URL must therefore be https://raketa.dev.
+        assertEquals("raketa.dev", state.gitlabDomain)
         assertEquals(335, state.gitlabProjectId)
         assertEquals("raketa/raketa", state.gitlabProjectName)
-        assertEquals("https://gitlab.raketa.in", CoverageApiSettings.baseUrlFor(state.gitlabDomain))
+        assertEquals("https://raketa.dev", CoverageApiSettings.baseUrlFor(state.gitlabDomain))
     }
 
     @Test
